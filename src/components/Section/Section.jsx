@@ -1,11 +1,11 @@
 import React from "react";
-import * as S from "./Section.style";
+import "./Section.scss";
 
-function Section({ background, fullWidth, children }) {
+function Section({ fullWidth, children }) {
   return (
-    <S.Section background={background}>
-      {fullWidth ? children : <S.Container>{children}</S.Container>}
-    </S.Section>
+    <div className="section">
+      {fullWidth ? children : <div className="container">{children}</div>}
+    </div>
   );
 }
 

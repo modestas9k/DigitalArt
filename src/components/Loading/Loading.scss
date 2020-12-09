@@ -1,6 +1,4 @@
-import styled from "styled-components";
-
-export const Loader = styled.div`
+.loader {
   &,
   &::before,
   &::after {
@@ -59,4 +57,4 @@ export const Loader = styled.div`
       box-shadow: 0 2.5em 0 0;
     }
   }
-`;
+}

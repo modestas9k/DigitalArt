@@ -1,11 +1,12 @@
 import React from "react";
-import * as S from "./Button.style";
+//import * as S from "./Button.style";
+import "./Button.scss";
 
-function Button({ children, handleClick, color }) {
+function Button({ children, handleClick }) {
   return (
-    <S.Button onClick={handleClick} color={color}>
+    <button className="button" onClick={handleClick}>
       {children}
-    </S.Button>
+    </button>
   );
 }
 

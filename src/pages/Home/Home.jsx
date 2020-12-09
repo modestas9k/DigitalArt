@@ -12,7 +12,6 @@ function Home() {
       <Section>
         <Button color="primary">Check React Out</Button>
       </Section>
-      
     </>
   );
 }

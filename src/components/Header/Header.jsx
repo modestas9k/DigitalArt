@@ -1,19 +1,23 @@
 import React from "react";
-import * as S from "./Header.style";
+import "./Header.scss";
 import { Link } from "react-router-dom";
 import logoImg from "../../assets/logo.png";
 
 function Header() {
   return (
-    <S.Header>
+    <div className="header">
       <Link to="/">
-        <S.Logo src={logoImg} alt="Logo" />
+        <img className="img-logo" src={logoImg} alt="Logo" />
       </Link>
-      <S.Actions>
-        <S.StyledLink to="/">Home</S.StyledLink>
-        <S.StyledLink to="/about">About</S.StyledLink>
-      </S.Actions>
-    </S.Header>
+      <nav>
+        <Link className="styled-link" to="/">
+          Home
+        </Link>
+        <Link className="styled-link" to="/about">
+          About
+        </Link>
+      </nav>
+    </div>
   );
 }
 

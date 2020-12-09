@@ -1,8 +1,8 @@
 import React from "react";
-import * as S from "./Loading.style";
+import "./Loading.scss";
 
 function Loading() {
-  return <S.Loader></S.Loader>;
+  return <div className="loader"></div>;
 }
 
 export default Loading;
