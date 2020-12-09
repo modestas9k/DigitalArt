@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 30px;
+  text-align: left;
+}
+.label {
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.9em;
+}
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+  border-radius: 5px;
+  padding: 15px 8px;
+  background: #eee;
+  border: none;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  &:focus {
+    background: rgb(245, 245, 245);
+    outline: none;
+  }
+}
