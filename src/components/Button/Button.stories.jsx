@@ -4,12 +4,12 @@ import Button from "./Button";
 
 storiesOf("Button", module)
   .add("Primary Button", () => (
-    <button
+    <Button
       className="button button-primary"
       handleClick={() => console.log("clicked")}
     >
       Primary Button
-    </button>
+    </Button>
   ))
   .add("Secondary Button", () => (
     <Button className="button" handleClick={() => console.log("clicked")}>
