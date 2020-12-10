@@ -29,8 +29,11 @@ function Header() {
             <Link className="styled-link" to="/">
               Home
             </Link>
-            <Link className="styled-link" to="/about">
-              About
+            <Link className="styled-link" to="/myProfile">
+              My Profile
+            </Link>
+            <Link className="styled-link" to="/upload">
+              Upload
             </Link>
             <button
               onClick={() => {
