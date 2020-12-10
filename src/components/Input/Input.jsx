@@ -9,6 +9,10 @@ function Input({
   placeholder,
   required,
   children,
+  value,
+  id,
+  key,
+  defaultValue,
 }) {
   return (
     <div className="wrapper">
@@ -16,10 +20,12 @@ function Input({
         {label}
         <input
           className="input"
-          id={name}
-          key={name}
+          id={id}
+          key={key}
+          value={value}
           name={name}
           type={type}
+          defaultValue={defaultValue}
           placeholder={placeholder}
           required={required}
           onChange={handleChange}

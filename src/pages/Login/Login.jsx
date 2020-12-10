@@ -27,7 +27,6 @@ function Login() {
         setError(error);
       });
   }
-  console.log(error);
   return (
     <Section>
       <form
