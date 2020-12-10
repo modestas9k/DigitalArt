@@ -27,7 +27,6 @@ function Register() {
         setError(error);
       });
   }
-  console.log(error);
 
   return (
     <Section>
@@ -39,20 +38,25 @@ function Register() {
         }}
       >
         <h1 className="headline">Register</h1>
+
         <Input
           name="email"
           label="Email"
           type="email"
           placeholder="Enter your email"
           required
-          error={error && error === "auth/invalid-email" ? error.message : ""}
           handleChange={(e) =>
             setFields({
               ...fields,
               email: e.target.value.toLowerCase(),
             })
           }
-        />
+        >
+          {error && error.code === "auth/invalid-email" && (
+            <span>{error.message}</span>
+          )}
+        </Input>
+
         <Input
           name="password"
           label="Password"
@@ -65,7 +69,11 @@ function Register() {
               password: e.target.value.toLowerCase(),
             })
           }
-        />
+        >
+          {error && error.code === "auth/weak-password" && (
+            <span>{error.message}</span>
+          )}
+        </Input>
         <Button className="button button-primary">Register</Button>
       </form>
     </Section>

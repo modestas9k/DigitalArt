@@ -8,7 +8,7 @@ function Input({
   type,
   placeholder,
   required,
-  error,
+  children,
 }) {
   return (
     <div className="wrapper">
@@ -25,7 +25,7 @@ function Input({
           onChange={handleChange}
         />
       </label>
-      <span>{error}</span>
+      <div className="children-wrapper">{children}</div>
     </div>
   );
 }

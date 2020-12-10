@@ -9,6 +9,7 @@ import "./Login.scss";
 function Login() {
   const history = useHistory();
   const Auth = useContext(AuthContext);
+  const [error, setError] = useState();
   const [fields, setFields] = useState({
     email: "",
     password: "",
@@ -23,10 +24,10 @@ function Login() {
         history.push("/");
       })
       .catch((error) => {
-        console.log(error);
+        setError(error);
       });
   }
-
+  console.log(error);
   return (
     <Section>
       <form
@@ -37,6 +38,7 @@ function Login() {
         }}
       >
         <h1 className="headline">Login</h1>
+
         <Input
           name="email"
           label="Email address"
@@ -49,7 +51,12 @@ function Login() {
               email: e.target.value.toLowerCase(),
             })
           }
-        />
+        >
+          {error && error.code === "auth/user-not-found" && (
+            <span>{error.message}</span>
+          )}
+        </Input>
+
         <Input
           name="password"
           label="Password"
@@ -62,7 +69,11 @@ function Login() {
               password: e.target.value.toLowerCase(),
             })
           }
-        />
+        >
+          {error && error.code === "auth/wrong-password" && (
+            <span>{error.message}</span>
+          )}
+        </Input>
         <Button className="button button-primary">Login</Button>
       </form>
     </Section>
