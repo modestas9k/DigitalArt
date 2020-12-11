@@ -6,6 +6,9 @@
   margin-right: 35px;
   img {
     width: 100%;
+    border-radius: 50%;
+    border: 2px solid #eee;
+    object-fit: cover;
   }
 }
 .text-wrapper {
