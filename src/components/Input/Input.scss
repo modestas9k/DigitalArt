@@ -9,7 +9,8 @@
   letter-spacing: 1px;
   font-size: 0.9em;
 }
-.input {
+input,
+textarea {
   width: 100%;
   box-sizing: border-box;
   margin-top: 10px;
@@ -17,7 +18,7 @@
   padding: 15px 8px;
   background: #eee;
   border: none;
-  transition: all 0.3s;
+  transition: background 0.3s;
   box-sizing: border-box;
   &:focus {
     background: rgb(245, 245, 245);
