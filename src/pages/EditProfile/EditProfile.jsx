@@ -24,7 +24,11 @@ function EditProfile() {
       .doc(Auth.state)
       .get()
       .then((data) => {
-        setUserData(data.data());
+        setUserData({
+          name: data.data().name,
+          bio: data.data().bio,
+          profileImage: data.data().profileImage,
+        });
       });
   }, [Auth.state]);
 
@@ -135,7 +139,7 @@ function EditProfile() {
         ></Input>
         <Input
           label="Bio"
-          type="text"
+          type="textarea"
           value={userData && userData.bio}
           handleChange={(e) =>
             setUserData({ ...userData, bio: e.target.value })
