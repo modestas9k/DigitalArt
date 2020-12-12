@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Section, Post } from "../../components";
 import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/auth";
 
 function Home() {
   const [posts, setPosts] = useState([]);
@@ -19,7 +21,6 @@ function Home() {
         );
       });
   }, []);
-
   return (
     <>
       <Section>
@@ -29,6 +30,7 @@ function Home() {
             return (
               <Post
                 key={id}
+                userImage={post.userImage}
                 username={post.username}
                 caption={post.caption}
                 imageURL={post.imageURL}
