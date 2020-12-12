@@ -1,11 +1,10 @@
-import React, { useEffect, useState, useContext } from "react";
-import { Section, Button } from "../../components";
+import React, { useEffect, useState } from "react";
+import { Section, Button, Post } from "../../components";
 import profileImage from "../../assets/user.svg";
 import "./MyProfile.scss";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import { AuthContext } from "../../contexts/AuthContext";
 import { useHistory } from "react-router-dom";
 
 function MyProfile() {
@@ -14,14 +13,15 @@ function MyProfile() {
     bio: "",
     profileImage: "",
   });
-  const Auth = useContext(AuthContext);
+  const user = firebase.auth().currentUser;
+  const [userPosts, setUserPosts] = useState();
   const history = useHistory();
 
   useEffect(() => {
     firebase
       .firestore()
       .collection("users")
-      .doc(Auth.state)
+      .doc(user.uid)
       .get()
       .then((doc) => {
         if (doc.data()) {
@@ -34,7 +34,23 @@ function MyProfile() {
           console.log("not found");
         }
       });
-  }, [Auth]);
+    getUserPosts();
+  }, [user]);
+
+  function getUserPosts() {
+    firebase
+      .firestore()
+      .collection("posts")
+      .where("userId", "==", user.uid)
+      .onSnapshot((snapshot) => {
+        setUserPosts(
+          snapshot.docs.map((doc) => ({
+            id: doc.id,
+            post: doc.data(),
+          }))
+        );
+      });
+  }
 
   return (
     <Section>
@@ -59,6 +75,20 @@ function MyProfile() {
           {userData.bio === "" && <p>Here u can add info</p>}
           {userData && <p>{userData.bio}</p>}
         </div>
+      </div>
+      <div className="profile__posts">
+        {userPosts &&
+          userPosts.map(({ id, post }) => {
+            return (
+              <Post
+                key={id}
+                userImage={post.userImage}
+                username={post.username}
+                caption={post.caption}
+                imageURL={post.imageURL}
+              />
+            );
+          })}
       </div>
     </Section>
   );
