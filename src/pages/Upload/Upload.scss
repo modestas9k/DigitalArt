@@ -1,0 +1,10 @@
+.upload__message {
+  width: 100%;
+  color: green;
+  padding: 20px;
+  background-color: lighten($color: green, $amount: 60%);
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-bottom: 40px;
+  margin-top: 40px;
+}
