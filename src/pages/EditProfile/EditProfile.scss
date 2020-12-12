@@ -1,11 +1,14 @@
-.upload-input {
+.editProfile__wrapper {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
   flex-wrap: wrap;
-  input {
-    flex: 4;
-  }
+}
+
+.editProfile__upload-input {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  flex: 3;
+
   button {
     width: 150px;
     height: 52px;
@@ -13,11 +16,12 @@
     margin-bottom: 8px;
   }
 }
-.image-wrapper {
-  width: 300px;
+.editProfile__image-wrapper {
+  flex: 1;
+  max-width: 300px;
+  min-width: 250px;
 }
-.profile-image {
+.editProfile__image {
   width: 100%;
-  border-radius: 50%;
-  border: 2px solid #eee;
+  object-fit: contain;
 }
