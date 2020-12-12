@@ -13,12 +13,13 @@ function Input({
   id,
   key,
   defaultValue,
+  progress,
 }) {
   switch (type) {
     case "textarea":
       return (
-        <div className="wrapper">
-          <label className="label" htmlFor={name}>
+        <div className="input__wrapper">
+          <label className="input__label" htmlFor={name}>
             {label}
             <textarea
               className="input"
@@ -33,14 +34,14 @@ function Input({
               onChange={handleChange}
             />
           </label>
-          <div className="children-wrapper">{children}</div>
+          <div className="input__children-wrapper">{children}</div>
         </div>
       );
 
-    default:
+    case "file":
       return (
-        <div className="wrapper">
-          <label className="label" htmlFor={name}>
+        <div className="input__wrapper">
+          <label className="input__label" htmlFor={name}>
             {label}
             <input
               className="input"
@@ -55,7 +56,30 @@ function Input({
               onChange={handleChange}
             />
           </label>
-          <div className="children-wrapper">{children}</div>
+          {progress && <progress value={progress} max="100" />}
+          <div className="input__children-wrapper">{children}</div>
+        </div>
+      );
+
+    default:
+      return (
+        <div className="input__wrapper">
+          <label className="input__label" htmlFor={name}>
+            {label}
+            <input
+              className="input"
+              id={id}
+              key={key}
+              value={value}
+              name={name}
+              type={type}
+              defaultValue={defaultValue}
+              placeholder={placeholder}
+              required={required}
+              onChange={handleChange}
+            />
+          </label>
+          <div className="input__children-wrapper">{children}</div>
         </div>
       );
   }

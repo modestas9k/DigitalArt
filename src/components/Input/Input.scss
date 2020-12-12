@@ -1,10 +1,13 @@
-.wrapper {
+.input__wrapper {
   display: flex;
   flex-direction: column;
   margin-bottom: 30px;
   text-align: left;
+  progress {
+    width: 100%;
+  }
 }
-.label {
+.input__label {
   text-transform: uppercase;
   letter-spacing: 1px;
   font-size: 0.9em;
@@ -26,7 +29,7 @@ textarea {
   }
 }
 
-.children-wrapper {
+.input__children-wrapper {
   color: rgb(223, 57, 57);
   margin-top: 5px;
 }
