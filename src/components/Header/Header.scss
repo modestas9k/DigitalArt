@@ -2,12 +2,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1em;
-  border-bottom: 1px solid #eee;
 }
-.logo {
-  color: #222;
-  text-decoration: none;
+.header__buttons {
+  button {
+    &:first-child {
+      margin-right: 10px;
+    }
+  }
 }
 
 .styled-link {
@@ -20,8 +21,4 @@
   &:not(:last-child) {
     margin-right: 15px;
   }
-}
-.img-logo {
-  max-height: 40px;
-  max-width: 100%;
 }
