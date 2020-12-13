@@ -1,43 +1,56 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Section, Button, Post } from "../../components";
-import profileImage from "../../assets/user.svg";
-import "./MyProfile.scss";
+import { useHistory } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthContext";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import { useHistory } from "react-router-dom";
+import "./MyProfile.scss";
+import profileImage from "../../assets/user.svg";
 
 function MyProfile() {
+  const auth = useContext(AuthContext);
+
   const [userData, setUserData] = useState({
     name: "",
     bio: "",
     profileImage: "",
   });
-  const user = firebase.auth().currentUser;
   const [userPosts, setUserPosts] = useState();
   const history = useHistory();
 
   useEffect(() => {
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(user.uid)
-      .get()
-      .then((doc) => {
-        if (doc.data()) {
-          setUserData({
-            name: doc.data().name,
-            bio: doc.data().bio,
-            profileImage: doc.data().profileImage,
-          });
-        } else {
-          console.log("not found");
-        }
-      });
-    getUserPosts();
-  }, [user]);
+    let mounted = true;
 
-  function getUserPosts() {
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user && mounted) {
+        getUserPosts(user);
+
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            if (doc.data()) {
+              setUserData({
+                name: doc.data().name,
+                bio: doc.data().bio,
+                profileImage: doc.data().profileImage,
+              });
+            } else {
+              console.log("not found");
+            }
+          });
+      } else {
+        console.log("no user");
+      }
+    });
+
+    return () => (mounted = false);
+  }, [auth]);
+
+  function getUserPosts(user) {
     firebase
       .firestore()
       .collection("posts")
