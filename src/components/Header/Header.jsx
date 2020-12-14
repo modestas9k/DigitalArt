@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "./Header.scss";
@@ -13,8 +13,6 @@ import {
   MenuItem,
   Avatar,
 } from "@material-ui/core";
-
-//import AccountCircle from "@material-ui/icons/AccountCircle";
 
 function Header() {
   const User = firebase.auth().currentUser;
@@ -40,9 +38,9 @@ function Header() {
   };
 
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Toolbar className="header">
-        <Typography variant="h5" onClick={() => history.push("/")}>
+        <Typography variant="h6" onClick={() => history.push("/")}>
           Digital_Art
         </Typography>
         {!user && (
@@ -65,12 +63,17 @@ function Header() {
         )}
         {user && (
           <div>
-            <IconButton onClick={handleMenu} color="inherit">
+            <IconButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              color="inherit"
+            >
               <Avatar alt={User.displayName} src={User.photoURL} />
-              {/* <AccountCircle /> */}
             </IconButton>
+
             <Menu
-              id="menu-appbar"
+              id="simple-menu"
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "top",
@@ -114,45 +117,6 @@ function Header() {
         )}
       </Toolbar>
     </AppBar>
-
-    // <div className="header">
-    //   <Link className="logo" to="/">
-    //     <h1>Digital_Art</h1>
-    //   </Link>
-    //   <nav>
-    //     {user && (
-    //       <>
-    //         <Link className="styled-link" to="/">
-    //           Home
-    //         </Link>
-    //         <Link className="styled-link" to="/myProfile">
-    //           My Profile
-    //         </Link>
-    //         <Link className="styled-link" to="/upload">
-    //           Upload
-    //         </Link>
-    //         <button
-    //           onClick={() => {
-    //             firebase.auth().signOut();
-    //             history.push("/");
-    //           }}
-    //         >
-    //           Logout
-    //         </button>
-    //       </>
-    //     )}
-    //     {!user && (
-    //       <>
-    //         <Link to="/register" className="styled-link">
-    //           Register
-    //         </Link>
-    //         <Link to="/login" className="styled-link">
-    //           Login
-    //         </Link>
-    //       </>
-    //     )}
-    //   </nav>
-    // </div>
   );
 }
 
