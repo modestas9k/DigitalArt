@@ -10,6 +10,7 @@ import {
   Container,
   Grid,
   makeStyles,
+  Button,
 } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -26,9 +27,15 @@ const useStyles = makeStyles({
 
 function Home(props) {
   const [posts, setPosts] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchPosts, setSearchPosts] = useState();
   const classes = useStyles(props);
 
   useEffect(() => {
+    defaultPosts();
+  }, []);
+
+  function defaultPosts() {
     firebase
       .firestore()
       .collection("posts")
@@ -41,7 +48,25 @@ function Home(props) {
           }))
         );
       });
-  }, []);
+  }
+  function goSearch() {
+    console.log(searchValue);
+    if (searchValue !== "") {
+      firebase
+        .firestore()
+        .collection("posts")
+        .where("username", "==", searchValue)
+        .get()
+        .then((snapshot) => {
+          setSearchPosts(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              post: doc.data(),
+            }))
+          );
+        });
+    }
+  }
 
   return (
     <>
@@ -53,25 +78,53 @@ function Home(props) {
             Place where artists can share and sell there work. Powered by
             creators.
           </Typography>
-
-          <TextField
-            className={classes.TextField}
-            label="Search..."
-            color="primary"
-            margin="normal"
-            variant="filled"
-            fullWidth={true}
-          />
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              goSearch(e);
+            }}
+          >
+            <TextField
+              className={classes.TextField}
+              label="Search..."
+              color="primary"
+              margin="normal"
+              variant="filled"
+              fullWidth={true}
+              onChange={(e) => setSearchValue(e.target.value)}
+            />
+            <Button type="submit" color="primary" variant="contained">
+              Search
+            </Button>
+          </form>
         </Container>
       </Section>
       <Section>
         <Grid container spacing={2}>
+          {searchValue !== "" &&
+            searchPosts &&
+            searchPosts.map(({ id, post }) => {
+              return (
+                <Grid key={id} xs={12} sm={6} md={4} item>
+                  <Post
+                    key={id}
+                    userId={post.userId}
+                    userImage={post.userImage}
+                    username={post.username}
+                    caption={post.caption}
+                    imageURL={post.imageURL}
+                  />
+                </Grid>
+              );
+            })}
           {posts &&
+            searchPosts !== "" &&
             posts.map(({ id, post }) => {
               return (
                 <Grid key={id} xs={12} sm={6} md={4} item>
                   <Post
                     key={id}
+                    userId={post.userId}
                     userImage={post.userImage}
                     username={post.username}
                     caption={post.caption}
