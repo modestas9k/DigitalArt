@@ -1,23 +1,47 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Section, Button, Input } from "../../components";
+import { Section } from "../../components";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import firebase from "firebase/app";
 import "firebase/storage";
 import "./EditProfile.scss";
-import defaultImage from "../../assets/user.svg";
+import {
+  Button,
+  Container,
+  Avatar,
+  Typography,
+  Grid,
+  makeStyles,
+  Input,
+  TextareaAutosize,
+  TextField,
+} from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  profileWrapper: {
+    display: "flex",
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  avatar: {
+    width: theme.spacing(17),
+    height: theme.spacing(17),
+    marginRight: 20,
+  },
+}));
 
 function EditProfile() {
   const Auth = useContext(AuthContext);
   const history = useHistory();
   const [image, setImage] = useState();
-  const [error, setError] = useState();
   const [progress, setProgress] = useState();
   const [userData, setUserData] = useState({
     name: "",
     bio: "",
     profileImage: "",
   });
+  const [formLoading, setFormLoading] = useState(false);
+  const classes = useStyles();
 
   useEffect(() => {
     firebase
@@ -36,14 +60,13 @@ function EditProfile() {
       });
   }, [Auth.state]);
 
-  const handleChange = (e) => {
-    if (e.target.files[0]) {
-      setImage(e.target.files[0]);
-    }
-  };
+  function submitChanges(e) {
+    e.preventDefault();
+    setFormLoading(true);
+    console.log("submitChange function started");
 
-  const handleUpload = () => {
     if (image) {
+      console.log("if image started");
       const uploadTask = firebase
         .storage()
         .ref(`images/${image.name}`)
@@ -70,25 +93,48 @@ function EditProfile() {
             .child(image.name)
             .getDownloadURL()
             .then((url) => {
-              // post image inside db
-              setUserData({
-                ...userData,
-                profileImage: url,
-              });
-              // firebase.firestore().collection("users").doc(Auth.state).set({
-              //   profileImage: url,
-              // });
-              setProgress("");
-              setImage("");
+              // storage/users
+              firebase
+                .firestore()
+                .collection("users")
+                .doc(Auth.state)
+                .set({
+                  bio: userData.bio,
+                  name: userData.name,
+                  profileImage: url,
+                })
+                .then(() => {
+                  // firebase Auth update
+                  firebase
+                    .auth()
+                    .currentUser.updateProfile({
+                      displayName: userData.name,
+                      photoURL: url,
+                    })
+                    .then(() => {
+                      console.log("Auth updated");
+                    })
+                    .catch((error) => {
+                      console.log(error);
+                    });
+                })
+                .then(() => {
+                  history.push("/myProfile");
+                })
+                .catch((error) => {
+                  setFormLoading(false);
+                  console.log(error);
+                });
             });
         }
       );
     } else {
-      setError("First you need choose file");
+      updateAuthProfile();
+      saveUserData();
     }
-  };
+  }
 
-  function updateUserProfile() {
+  function updateAuthProfile() {
     firebase
       .auth()
       .currentUser.updateProfile({
@@ -96,20 +142,13 @@ function EditProfile() {
         photoURL: userData.profileImage,
       })
       .then(() => {
-        // Update successful.
         console.log("Auth updated");
       })
       .catch((error) => {
-        // An error happened.
         console.log(error);
       });
   }
-
-  function submitChanges(e) {
-    e.preventDefault();
-
-    updateUserProfile();
-
+  function saveUserData() {
     firebase
       .firestore()
       .collection("users")
@@ -119,63 +158,73 @@ function EditProfile() {
         name: userData.name,
         profileImage: userData.profileImage,
       })
-      .then(() => history.push("/myProfile"));
+      .then(() => history.push("/myProfile"))
+      .catch(() => {
+        setFormLoading(false);
+      });
   }
 
   return (
     <Section>
-      <h1>Edit profile</h1>
-
-      <div className="editProfile__wrapper">
-        <div className="editProfile__image-wrapper">
-          <img
-            className="editProfile__image"
-            src={userData.profileImage || defaultImage}
-            alt="profile"
-          />
-        </div>
-        <div className="editProfile__upload-input">
-          <Input
-            label="profile image"
-            type="file"
-            handleChange={handleChange}
-            progress={progress}
-          >
-            {error && <span>{error}</span>}
-          </Input>
-          <Button
-            handleClick={handleUpload}
-            className="button button-primary max-150"
-          >
-            Upload
-          </Button>
-        </div>
-      </div>
-
-      <form className="editProfile__form">
-        <Input
-          label="Name"
-          type="text"
-          value={userData && userData.name}
-          handleChange={(e) =>
-            setUserData({ ...userData, name: e.target.value })
-          }
-        ></Input>
-        <Input
-          label="Bio"
-          type="textarea"
-          value={userData && userData.bio}
-          handleChange={(e) =>
-            setUserData({ ...userData, bio: e.target.value })
-          }
-        />
-        <Button
-          handleClick={(e) => submitChanges(e)}
-          className="button button-primary"
-        >
-          Save
-        </Button>
-      </form>
+      <Container>
+        <Typography variant="h2">Edit Profile</Typography>
+        {progress && <progress value={progress} />}
+        <form>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Avatar className={classes.avatar} src={userData.profileImage} />
+              <Input
+                accept="image/*"
+                type="file"
+                fullWidth
+                onChange={(e) => {
+                  setImage(e.target.files[0]);
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                placeholder="Name"
+                variant="filled"
+                label="Name"
+                color="primary"
+                type="text"
+                fullWidth="true"
+                value={userData && userData.name}
+                onChange={(e) => {
+                  setUserData({ ...userData, name: e.target.value });
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextareaAutosize
+                placeholder="Bio"
+                variant="filled"
+                label="Bio"
+                rowsMin={3}
+                color="primary"
+                type="textarea"
+                fullWidth="true"
+                value={userData && userData.bio}
+                onChange={(e) => {
+                  setUserData({ ...userData, bio: e.target.value });
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                color="primary"
+                variant="contained"
+                fullWidth
+                disabled={formLoading}
+                onClick={(e) => submitChanges(e)}
+              >
+                Save
+              </Button>
+            </Grid>
+          </Grid>
+        </form>
+      </Container>
     </Section>
   );
 }
