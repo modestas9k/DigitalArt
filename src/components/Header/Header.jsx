@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Login } from "../../components";
 import { useHistory } from "react-router-dom";
 import firebase from "firebase/app";
 import "firebase/auth";
-import "./Header.scss";
 import {
   AppBar,
   Toolbar,
@@ -12,12 +12,25 @@ import {
   Menu,
   MenuItem,
   Avatar,
+  Modal,
+  makeStyles,
+  Paper,
 } from "@material-ui/core";
 
+const useStyles = makeStyles(() => ({
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+}));
+
 function Header() {
+  const classes = useStyles();
   const User = firebase.auth().currentUser;
   const [user, setUser] = useState(false);
   const history = useHistory();
+  const [modalState, setModalState] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
 
@@ -30,6 +43,7 @@ function Header() {
       }
     });
   }, []);
+
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -39,28 +53,31 @@ function Header() {
 
   return (
     <AppBar position="sticky">
-      <Toolbar className="header">
+      <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
         <Typography variant="h6" onClick={() => history.push("/")}>
           Digital_Art
         </Typography>
         {!user && (
-          <div className="header__buttons">
+          <div>
             <Button
-              onClick={() => history.push("/login")}
-              variant="outlined"
-              color="inherit"
+              variant="contained"
+              color="primary"
+              onClick={() => setModalState(true)}
             >
               Login
             </Button>
-            <Button
-              onClick={() => history.push("/register")}
-              variant="outlined"
-              color="inherit"
+            <Modal
+              className={classes.modal}
+              open={modalState}
+              onClose={() => setModalState(false)}
             >
-              Register
-            </Button>
+              <Paper>
+                <Login />
+              </Paper>
+            </Modal>
           </div>
         )}
+
         {user && (
           <div>
             <IconButton
@@ -108,6 +125,7 @@ function Header() {
                   handleClose();
                   firebase.auth().signOut();
                   history.push("/");
+                  setModalState(false);
                 }}
               >
                 Logout
