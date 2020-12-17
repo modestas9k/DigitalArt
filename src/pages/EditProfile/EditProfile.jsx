@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import firebase from "firebase/app";
 import "firebase/storage";
-import "./EditProfile.scss";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import {
   Button,
   Container,
@@ -15,6 +15,7 @@ import {
   Input,
   TextareaAutosize,
   TextField,
+  Box,
 } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(17),
     height: theme.spacing(17),
     marginRight: 20,
+    marginBottom: 20,
   },
 }));
 
@@ -34,7 +36,7 @@ function EditProfile() {
   const Auth = useContext(AuthContext);
   const history = useHistory();
   const [image, setImage] = useState();
-  const [progress, setProgress] = useState();
+  const [progress, setProgress] = useState("");
   const [userData, setUserData] = useState({
     name: "",
     bio: "",
@@ -167,8 +169,23 @@ function EditProfile() {
   return (
     <Section>
       <Container>
-        <Typography variant="h2">Edit Profile</Typography>
-        {progress && <progress value={progress} />}
+        <Box
+          my={2}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h2">Edit Profile</Typography>
+          <Box>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => history.push("/myProfile")}
+            >
+              Back
+            </Button>
+          </Box>
+        </Box>
         <form>
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -176,7 +193,7 @@ function EditProfile() {
               <Input
                 accept="image/*"
                 type="file"
-                fullWidth
+                style={{ width: "100%" }}
                 onChange={(e) => {
                   setImage(e.target.files[0]);
                 }}
@@ -184,12 +201,11 @@ function EditProfile() {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                placeholder="Name"
+                style={{ width: "100%" }}
                 variant="filled"
-                label="Name"
+                label="Username"
                 color="primary"
                 type="text"
-                fullWidth="true"
                 value={userData && userData.name}
                 onChange={(e) => {
                   setUserData({ ...userData, name: e.target.value });
@@ -198,13 +214,13 @@ function EditProfile() {
             </Grid>
             <Grid item xs={12}>
               <TextareaAutosize
-                placeholder="Bio"
+                style={{ width: "100%" }}
                 variant="filled"
                 label="Bio"
+                placeholder="Bio"
                 rowsMin={3}
                 color="primary"
                 type="textarea"
-                fullWidth="true"
                 value={userData && userData.bio}
                 onChange={(e) => {
                   setUserData({ ...userData, bio: e.target.value });
@@ -212,6 +228,9 @@ function EditProfile() {
               />
             </Grid>
             <Grid item xs={12}>
+              {progress && (
+                <LinearProgress variant="determinate" value={progress} />
+              )}
               <Button
                 color="primary"
                 variant="contained"

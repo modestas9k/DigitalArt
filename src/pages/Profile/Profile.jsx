@@ -42,31 +42,36 @@ export default function Profile(props) {
   const { id } = useParams();
 
   useEffect(() => {
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(id)
-      .get()
-      .then((data) => {
-        if (data) {
-          setProfileData(data.data());
-        } else {
-          console.log("fail");
-        }
-      });
-    firebase
-      .firestore()
-      .collection("posts")
-      .where("userId", "==", id)
-      .onSnapshot((snapshot) => {
-        setUserPosts(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            post: doc.data(),
-          }))
-        );
-      })
-      .catch((error) => console.log(error));
+    let mounted = true;
+
+    if (id && mounted) {
+      firebase
+        .firestore()
+        .collection("users")
+        .doc(id)
+        .get()
+        .then((data) => {
+          if (data) {
+            setProfileData(data.data());
+          } else {
+            console.log("fail");
+          }
+        });
+      firebase
+        .firestore()
+        .collection("posts")
+        .where("userId", "==", id)
+        .onSnapshot((snapshot) => {
+          setUserPosts(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              post: doc.data(),
+            }))
+          );
+        });
+    }
+
+    return () => (mounted = false);
   }, [id]);
 
   return (
