@@ -30,6 +30,10 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 20,
     marginBottom: 20,
   },
+  spacing: {
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(1),
+  },
 }));
 
 function EditProfile() {
@@ -229,7 +233,11 @@ function EditProfile() {
             </Grid>
             <Grid item xs={12}>
               {progress && (
-                <LinearProgress variant="determinate" value={progress} />
+                <LinearProgress
+                  className={classes.spacing}
+                  variant="determinate"
+                  value={progress}
+                />
               )}
               <Button
                 color="primary"
