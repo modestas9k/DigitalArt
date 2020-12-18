@@ -1,60 +1,104 @@
 import React from "react";
 import {
-  Paper,
-  Button,
-  Typography,
+  Container,
   makeStyles,
   Box,
-  Container,
   IconButton,
+  Chip,
+  Avatar,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
-import SettingsIcon from "@material-ui/icons/Settings";
+import DeleteIcon from "@material-ui/icons/Delete";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   image: {
     width: "100%",
     objectFit: "contain",
     borderRadius: 3,
   },
-  myProfile: {
-    display: "flex",
-    alignItems: "center",
-    //justifyItems: "space-around",
-  },
-});
 
-function Post({ imageURL, username, caption, userImage, userId }) {
+  chip: {
+    margin: theme.spacing(0.5),
+  },
+}));
+
+function Post({
+  imageURL,
+  username,
+  caption,
+  userImage,
+  userId,
+  handleDeleteButton,
+}) {
   const history = useHistory();
   const classes = useStyles();
 
   return (
-    <Paper>
+    <Container disableGutters>
       <Box width="100%">
         <img className={classes.image} src={imageURL} alt={caption} />
       </Box>
-      <div style={{ display: "flex" }}>
-        {userId && userId === "#" && (
-          <Container>
-            <Typography variant="subtitle2">{caption}</Typography>
-          </Container>
+      <Box>
+        {/* Here ar 3 types of Post bottom that I use  */}
+        {/* for home page */}
+        {userId !== "myProfile" && userId !== "profile" && (
+          <Chip
+            className={classes.chip}
+            avatar={<Avatar src={userImage}></Avatar>}
+            label={username}
+            variant="default"
+            color="primary"
+            clickable
+            size="small"
+            onClick={() => history.push(`/profile/${userId}`)}
+          />
         )}
-        {userId.length > 1 && (
+        {/* for other ppl profile */}
+        {userId === "profile" && (
+          <Chip
+            className={classes.chip}
+            avatar={<Avatar src={userImage}></Avatar>}
+            label={username}
+            variant="default"
+            color="primary"
+            clickable
+            size="small"
+          />
+        )}
+        {/* for my Profile page */}
+        {userId === "myProfile" && (
           <>
-            <Button
-              variant="text"
+            <Chip
+              className={classes.chip}
+              avatar={<Avatar src={userImage}></Avatar>}
+              label={username}
+              variant="default"
               color="primary"
-              onClick={() => history.push(`/profile/${userId}`)}
+              clickable
+              size="small"
+            />
+            <IconButton
+              variant="text"
+              color="default"
+              onClick={handleDeleteButton}
             >
-              {username}
-            </Button>
-            <Typography variant="subtitle2" style={{ alignSelf: "center" }}>
-              {caption}
-            </Typography>
+              <DeleteIcon />
+            </IconButton>
           </>
         )}
-      </div>
-    </Paper>
+        {caption &&
+          caption.map((cap) => {
+            return (
+              <Chip
+                className={classes.chip}
+                size="small"
+                label={cap}
+                key={cap}
+              />
+            );
+          })}
+      </Box>
+    </Container>
   );
 }
 
