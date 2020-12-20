@@ -2,9 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Routes from "./Routes";
 import AuthProvider from "./contexts/AuthContext";
-import "./Servers/firebase";
+import "./Servers/firebase.js";
 import "normalize.css";
-import "./index.scss";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
 
