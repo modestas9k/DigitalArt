@@ -13,12 +13,13 @@ import {
   Checkbox,
   FormControlLabel,
   makeStyles,
-  LinearProgress,
+  CircularProgress,
   FormControl,
   FormHelperText,
 } from "@material-ui/core";
 import ChipInput from "material-ui-chip-input";
 import { useHistory } from "react-router-dom";
+import Jimp from "jimp";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,7 +45,6 @@ function Upload() {
   const [image, setImage] = useState();
   const [caption, setCaption] = useState([]);
   const [checked, setChecked] = useState(false);
-  const [progress, setProgress] = useState();
   const [inProgress, setInProgress] = useState(false);
   const [captionError, setCaptionError] = useState();
   const [imageError, setImageError] = useState();
@@ -60,7 +60,28 @@ function Upload() {
       setImage(e.target.files[0]);
     }
   };
-  function handleUpload() {
+
+  async function resize(image) {
+    try {
+      const newImage = await Jimp.read(URL.createObjectURL(image));
+
+      await newImage.resize(600, Jimp.AUTO).quality(60);
+      // Save and overwrite the image
+      let base64String = await newImage.getBase64Async(newImage._originalMime);
+
+      let blob = await (await fetch(base64String)).blob();
+
+      let file = new File([blob], "small-" + image.name, {
+        type: newImage._originalMime,
+      });
+
+      return file;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function handleUpload() {
     setInProgress(true);
     setImageError("");
     setCaptionError("");
@@ -76,47 +97,68 @@ function Upload() {
       return;
     }
     if (image) {
-      const fileRef = firebase.storage().ref("images").child(image.name);
+      try {
+        let randomId = Math.random().toString(36).substring(2);
+        let imageFolder = `images/${randomId}`;
 
-      const uploadTask = fileRef.put(image);
+        // upload the original file first
+        const fileRef = firebase
+          .storage()
+          .ref()
+          .child(`${imageFolder}/${image.name}`);
 
-      uploadTask.on(
-        "state_changed",
-        (snapshot) => {
-          // progress function
-          const Progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(Progress);
-        },
-        (error) => {
-          // error function
-          console.log(error);
-          setInProgress(false);
-        },
-        () => {
-          // complete function
-          fileRef
-            .getDownloadURL()
-            .then((url) => {
-              // post image inside firestore
-              firebase.firestore().collection("posts").add({
-                timestamp: new Date(),
-                username: firebase.auth().currentUser.displayName,
-                userId: firebase.auth().currentUser.uid,
-                userImage: firebase.auth().currentUser.photoURL,
-                caption: caption,
-                freeDownload: checked,
-                imageURL: url,
-                imageRef: fileRef.fullPath,
-              });
-            })
-            .then(() => {
-              setInProgress(false);
-              history.push("/myProfile");
-            });
-        }
-      );
+        let uploadTask = await fileRef.put(image);
+
+        // Not working with progress
+        // uploadTask.on(
+        //   "state_changed",
+        //   (snapshot) => {
+        //     // progress function
+        //     const Progress = Math.round(
+        //       (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+        //     );
+        //     setProgress(Progress);
+        //   },
+        //   (error) => {
+        //     // error function
+        //     console.log(error);
+        //     setInProgress(false);
+        //   }
+        // );
+
+        const originalImageUrl = await fileRef.getDownloadURL();
+
+        // now upload the smaller file
+        const smallImage = await resize(image);
+        const smallFileRef = firebase
+          .storage()
+          .ref()
+          .child(`${imageFolder}/${smallImage.name}`);
+
+        await smallFileRef.put(smallImage);
+        const smallImageURL = await smallFileRef.getDownloadURL();
+
+        // post image inside firestore
+        await firebase.firestore().collection("posts").add({
+          timestamp: new Date(),
+          username: firebase.auth().currentUser.displayName,
+          userId: firebase.auth().currentUser.uid,
+          userImage: firebase.auth().currentUser.photoURL,
+          caption: caption,
+          freeDownload: checked,
+          imageURL: originalImageUrl,
+          imageRef: fileRef.fullPath,
+          smallImageURL: smallImageURL,
+          smallImageRef: smallFileRef.fullPath,
+        });
+        setInProgress(false);
+      } catch (error) {
+        console.error(error);
+        setInProgress(false);
+      }
+
+      setInProgress(false);
+      history.push("/myProfile");
     } else {
       setImageError("No file selected");
       setInProgress(false);
@@ -164,9 +206,7 @@ function Upload() {
               }
               label="Allow to download"
             />
-            {progress && (
-              <LinearProgress variant="determinate" value={progress} />
-            )}
+            {inProgress && <CircularProgress />}
             <Button
               className={classes.spacing}
               onClick={() => handleUpload()}
