@@ -107,7 +107,7 @@ function Upload() {
           .ref()
           .child(`${imageFolder}/${image.name}`);
 
-        let uploadTask = await fileRef.put(image);
+        await fileRef.put(image);
 
         // Not working with progress
         // uploadTask.on(
