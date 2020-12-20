@@ -8,22 +8,39 @@ import {
   TextField,
   Typography,
   Container,
-  Grid,
   makeStyles,
   Button,
 } from "@material-ui/core";
+import Masonry from "react-masonry-component";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   homeWelcome: {
-    marginTop: "-21px",
-    height: (props) => (props.small ? "20vh" : "60vh"),
-    color: "rgb(235, 235, 235)",
+    height: "50vh",
+    color: "rgba(255, 255, 255, 0.945)",
     marginBottom: "16px",
   },
-  TextField: {
-    background: "rgb(235, 235, 235)",
+  header: {
+    fontSize: "3.4rem",
   },
-});
+  TextField: {
+    background: "rgba(255, 255, 255, 0.562)",
+    borderRadius: "4px",
+  },
+  postBox: {
+    boxSizing: "border-box",
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+      padding: "0 8px",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "33%",
+    },
+  },
+}));
 
 function Home(props) {
   const [posts, setPosts] = useState([]);
@@ -36,7 +53,7 @@ function Home(props) {
   }, []);
 
   function defaultPosts() {
-    firebase
+    return firebase
       .firestore()
       .collection("posts")
       .orderBy("timestamp", "desc")
@@ -49,13 +66,12 @@ function Home(props) {
         );
       });
   }
-  function goSearch() {
-    console.log(searchValue);
+  function goSearch(e) {
     if (searchValue !== "") {
       firebase
         .firestore()
         .collection("posts")
-        .where("username", "==", searchValue)
+        .where("caption", "array-contains", searchValue)
         .get()
         .then((snapshot) => {
           setSearchPosts(
@@ -73,7 +89,9 @@ function Home(props) {
       <Section className="home__welcome">
         <Container className={classes.homeWelcome}>
           <Typography component="div" style={{ height: "10vh" }} />
-          <Typography variant="h1">Digital Art</Typography>
+          <Typography className={classes.header} variant="h1">
+            Digital Art
+          </Typography>
           <Typography variant="subtitle1" color="inherit">
             Place where artists can share and sell there work. Powered by
             creators.
@@ -81,6 +99,7 @@ function Home(props) {
           <form
             onSubmit={(e) => {
               e.preventDefault();
+              console.log(e);
               goSearch(e);
             }}
           >
@@ -99,42 +118,42 @@ function Home(props) {
           </form>
         </Container>
       </Section>
-      <Section>
-        <Grid container spacing={2}>
+
+      <Container disableGutters>
+        <Masonry className={classes.masonry}>
           {searchValue !== "" &&
             searchPosts &&
             searchPosts.map(({ id, post }) => {
               return (
-                <Grid key={id} xs={12} sm={6} md={4} item>
+                <div key={id} className={classes.postBox}>
                   <Post
-                    key={id}
                     userId={post.userId}
                     userImage={post.userImage}
                     username={post.username}
                     caption={post.caption}
-                    imageURL={post.imageURL}
+                    imageURL={post.smallImageURL}
                   />
-                </Grid>
+                </div>
               );
             })}
+
           {posts &&
-            searchPosts !== "" &&
+            searchValue === "" &&
             posts.map(({ id, post }) => {
               return (
-                <Grid key={id} xs={12} sm={6} md={4} item>
+                <div key={id} className={classes.postBox}>
                   <Post
-                    key={id}
                     userId={post.userId}
                     userImage={post.userImage}
                     username={post.username}
                     caption={post.caption}
-                    imageURL={post.imageURL}
+                    imageURL={post.smallImageURL}
                   />
-                </Grid>
+                </div>
               );
             })}
-        </Grid>
-      </Section>
+        </Masonry>
+      </Container>
     </>
   );
 }

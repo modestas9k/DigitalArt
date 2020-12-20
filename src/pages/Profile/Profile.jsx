@@ -7,11 +7,11 @@ import {
   Typography,
   Container,
   makeStyles,
-  Grid,
   Box,
 } from "@material-ui/core";
 import { Post } from "../../components";
 import { useHistory, useParams } from "react-router-dom";
+import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
   profileWrapper: {
@@ -24,6 +24,20 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(17),
     height: theme.spacing(17),
     marginRight: 20,
+  },
+  postBox: {
+    boxSizing: "border-box",
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+      padding: "0 8px",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "33%",
+    },
   },
 }));
 
@@ -84,23 +98,23 @@ export default function Profile(props) {
             </Box>
           </Container>
           <Container>
-            <Grid container spacing={2}>
+            <Masonry>
               {userPosts &&
                 userPosts.map(({ id, post }) => {
                   return (
-                    <Grid key={id} xs={12} sm={6} md={4} item>
+                    <div key={id} className={classes.postBox}>
                       <Post
                         key={id}
                         userId="profile"
                         userImage={post.userImage}
                         username={post.username}
                         caption={post.caption}
-                        imageURL={post.imageURL}
+                        imageURL={post.smallImageURL}
                       />
-                    </Grid>
+                    </div>
                   );
                 })}
-            </Grid>
+            </Masonry>
           </Container>
         </>
       )}

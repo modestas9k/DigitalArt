@@ -18,6 +18,7 @@ import {
   Button,
 } from "@material-ui/core";
 import SettingsIcon from "@material-ui/icons/Settings";
+import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +52,24 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
     padding: theme.spacing(4),
+  },
+  buttonBox: {
+    textAlign: "right",
+    margin: theme.spacing(3),
+  },
+  postBox: {
+    boxSizing: "border-box",
+    marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      width: "100%",
+    },
+    [theme.breakpoints.up("sm")]: {
+      width: "50%",
+      padding: "0 8px",
+    },
+    [theme.breakpoints.up("md")]: {
+      width: "33%",
+    },
   },
 }));
 
@@ -209,7 +228,7 @@ function MyProfile() {
         </Grid>
       </Container>
       <Container>
-        <Box marginBottom={2}>
+        <Box className={classes.buttonBox}>
           <Button
             color="primary"
             variant="outlined"
@@ -219,7 +238,7 @@ function MyProfile() {
           </Button>
         </Box>
 
-        <Grid container spacing={2}>
+        <Masonry>
           {userPosts && userPosts.length === 0 && (
             <Box mx="auto" mt={16}>
               <Typography variant="h6">No images added</Typography>
@@ -235,23 +254,23 @@ function MyProfile() {
           {userPosts &&
             userPosts.map(({ id, post }) => {
               return (
-                <Grid key={id} xs={12} sm={6} md={4} item>
+                <div key={id} className={classes.postBox}>
                   <Post
                     key={id}
                     userId="myProfile"
                     userImage={post.userImage}
                     username={post.username}
                     caption={post.caption}
-                    imageURL={post.imageURL}
+                    imageURL={post.smallImageURL}
                     handleDeleteButton={(e) => {
                       setDeleteModal(true);
                       setDeletedPostId({ id: id, ref: post.imageRef });
                     }}
                   />
-                </Grid>
+                </div>
               );
             })}
-        </Grid>
+        </Masonry>
       </Container>
     </>
   );
