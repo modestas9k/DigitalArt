@@ -16,6 +16,7 @@ import Masonry from "react-masonry-component";
 const useStyles = makeStyles((theme) => ({
   homeWelcome: {
     height: "50vh",
+    minHeight: "350px",
     color: "rgba(255, 255, 255, 0.945)",
     marginBottom: "16px",
   },
