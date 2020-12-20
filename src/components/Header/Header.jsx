@@ -61,7 +61,7 @@ function Header() {
           <div>
             <Button
               variant="contained"
-              color="primary"
+              color="default"
               onClick={() => setModalState(true)}
             >
               Login
@@ -118,7 +118,7 @@ function Header() {
                   history.push("/upload");
                 }}
               >
-                Upload
+                Upload image
               </MenuItem>
               <MenuItem
                 onClick={() => {

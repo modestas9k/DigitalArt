@@ -89,7 +89,7 @@ export default function Login() {
             </Box>
             <form>
               <TextField
-                autoComplete
+                autoComplete="true"
                 helperText={emailError}
                 error={Boolean(emailError)}
                 margin="normal"
@@ -104,7 +104,7 @@ export default function Login() {
               />
 
               <TextField
-                autoComplete
+                autoComplete="true"
                 helperText={passwordError}
                 error={Boolean(passwordError)}
                 margin="normal"

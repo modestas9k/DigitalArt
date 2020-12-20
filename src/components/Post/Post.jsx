@@ -29,45 +29,34 @@ function Post({
   userImage,
   userId,
   handleDeleteButton,
+  className,
 }) {
   const history = useHistory();
   const classes = useStyles();
 
   return (
-    <Container disableGutters>
-      <Box width="100%">
-        <img className={classes.image} src={imageURL} alt={caption} />
-      </Box>
-      <Box>
-        {/* Here ar 3 types of Post bottom that I use  */}
-        {/* for home page */}
-        {userId !== "myProfile" && userId !== "profile" && (
-          <Chip
-            className={classes.chip}
-            avatar={<Avatar src={userImage}></Avatar>}
-            label={username}
-            variant="default"
-            color="primary"
-            clickable
-            size="small"
-            onClick={() => history.push(`/profile/${userId}`)}
-          />
-        )}
-        {/* for other ppl profile */}
-        {userId === "profile" && (
-          <Chip
-            className={classes.chip}
-            avatar={<Avatar src={userImage}></Avatar>}
-            label={username}
-            variant="default"
-            color="primary"
-            clickable
-            size="small"
-          />
-        )}
-        {/* for my Profile page */}
-        {userId === "myProfile" && (
-          <>
+    <>
+      <Container disableGutters className={className}>
+        <Box width="100%">
+          <img className={classes.image} src={imageURL} alt={caption} />
+        </Box>
+        <Box>
+          {/* Here ar 3 types of Post bottom that I use  */}
+          {/* for home page */}
+          {userId !== "myProfile" && userId !== "profile" && (
+            <Chip
+              className={classes.chip}
+              avatar={<Avatar src={userImage}></Avatar>}
+              label={username}
+              variant="default"
+              color="primary"
+              clickable
+              size="small"
+              onClick={() => history.push(`/profile/${userId}`)}
+            />
+          )}
+          {/* for other ppl profile */}
+          {userId === "profile" && (
             <Chip
               className={classes.chip}
               avatar={<Avatar src={userImage}></Avatar>}
@@ -77,28 +66,42 @@ function Post({
               clickable
               size="small"
             />
-            <IconButton
-              variant="text"
-              color="default"
-              onClick={handleDeleteButton}
-            >
-              <DeleteIcon />
-            </IconButton>
-          </>
-        )}
-        {caption &&
-          caption.map((cap) => {
-            return (
+          )}
+          {/* for my Profile page */}
+          {userId === "myProfile" && (
+            <>
               <Chip
                 className={classes.chip}
+                avatar={<Avatar src={userImage}></Avatar>}
+                label={username}
+                variant="default"
+                color="primary"
+                clickable
                 size="small"
-                label={cap}
-                key={cap}
               />
-            );
-          })}
-      </Box>
-    </Container>
+              <IconButton
+                variant="text"
+                color="default"
+                onClick={handleDeleteButton}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </>
+          )}
+          {caption &&
+            caption.map((cap) => {
+              return (
+                <Chip
+                  className={classes.chip}
+                  size="small"
+                  label={cap}
+                  key={cap}
+                />
+              );
+            })}
+        </Box>
+      </Container>
+    </>
   );
 }
 
