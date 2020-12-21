@@ -21,28 +21,34 @@ import SettingsIcon from "@material-ui/icons/Settings";
 import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    "& > *": {
-      margin: theme.spacing(1),
-    },
-  },
   profileWrapper: {
     display: "flex",
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: theme.spacing(6),
+    marginBottom: theme.spacing(6),
+    maxWidth: "700px",
+    margin: "0 auto",
   },
-  image: {
-    width: "100%",
-    objectFit: "contain",
-    borderRadius: 3,
-  },
-  avatarWrapper: {
+
+  avatar: {
     width: theme.spacing(17),
     height: theme.spacing(17),
     marginRight: 20,
     marginBottom: 20,
     marginInline: "auto",
   },
+  profileTextBox: {
+    marginBottom: theme.spacing(4),
+    textAlign: "center",
+    [theme.breakpoints.up("sm")]: {
+      textAlign: "left",
+    },
+  },
+  image: {
+    width: "100%",
+    objectFit: "contain",
+    borderRadius: 3,
+  },
+
   modal: {
     display: "flex",
     alignItems: "center",
@@ -54,8 +60,11 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(4),
   },
   buttonBox: {
-    textAlign: "right",
-    margin: theme.spacing(3),
+    display: "flex",
+    justifyContent: "space-between",
+    [theme.breakpoints.up("sm")]: {
+      justifyContent: "flex-end",
+    },
   },
   postBox: {
     boxSizing: "border-box",
@@ -185,37 +194,23 @@ function MyProfile() {
           </Paper>
         </Modal>
         <Grid container className={classes.profileWrapper}>
-          <Grid item xs={5} sm={4}>
-            <Avatar
-              className={classes.avatarWrapper}
-              src={userData.profileImage}
-            />
+          <Grid item xs={12} sm={4}>
+            <Avatar className={classes.avatar} src={userData.profileImage} />
           </Grid>
           <Grid item xs={12} sm={8}>
             {userData.name !== "" && (
-              <>
-                <Box
-                  mx="auto"
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Typography variant="h4">{userData.name}</Typography>
-                  <IconButton onClick={() => history.push("/editProfile")}>
-                    <SettingsIcon />
-                  </IconButton>
-                </Box>
+              <Box className={classes.profileTextBox} mx="auto">
+                <Typography variant="h4">{userData.name}</Typography>
                 <Typography variant="subtitle2">{userData.bio} </Typography>
-              </>
+              </Box>
             )}
             {userData.name === "" && userData.bio === "" && (
-              <Box>
+              <Box className={classes.profileTextBox}>
                 <Typography variant="body1">
                   You don't have any information about your self.
                 </Typography>
                 <Button
+                  style={{ margin: "16px" }}
                   variant="contained"
                   color="primary"
                   onClick={() => history.push("/editProfile")}
@@ -225,32 +220,24 @@ function MyProfile() {
               </Box>
             )}
           </Grid>
-        </Grid>
-      </Container>
-      <Container>
-        <Box className={classes.buttonBox}>
-          <Button
-            color="primary"
-            variant="outlined"
-            onClick={() => history.push("/upload")}
-          >
-            Upload
-          </Button>
-        </Box>
-
-        <Masonry>
-          {userPosts && userPosts.length === 0 && (
-            <Box mx="auto" mt={16}>
-              <Typography variant="h6">No images added</Typography>
+          {userData.name !== "" && (
+            <Grid item xs={12} className={classes.buttonBox}>
               <Button
-                variant="contained"
                 color="primary"
+                variant="outlined"
                 onClick={() => history.push("/upload")}
               >
-                Upload image
+                Upload Image
               </Button>
-            </Box>
+              <IconButton onClick={() => history.push("/editProfile")}>
+                <SettingsIcon />
+              </IconButton>
+            </Grid>
           )}
+        </Grid>
+      </Container>
+      <Container disableGutters>
+        <Masonry>
           {userPosts &&
             userPosts.map(({ id, post }) => {
               return (

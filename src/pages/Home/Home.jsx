@@ -1,24 +1,30 @@
 import React, { useState, useEffect } from "react";
-import { Section, Post } from "../../components";
+import { Post } from "../../components";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
-import "./Home.scss";
 import {
   TextField,
   Typography,
   Container,
   makeStyles,
   Button,
+  Box,
 } from "@material-ui/core";
 import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
+  welcomeBg: {
+    backgroundImage: "linear-gradient(to top, #30cfd0 0%, #330867 100%)",
+  },
   homeWelcome: {
-    height: "50vh",
     minHeight: "350px",
+    maxHeight: "450px",
     color: "rgba(255, 255, 255, 0.945)",
-    marginBottom: "16px",
+    marginBottom: theme.spacing(2),
+    justifyContent: "center",
+    display: "flex",
+    flexDirection: "column",
   },
   header: {
     fontSize: "3.4rem",
@@ -87,9 +93,8 @@ function Home(props) {
 
   return (
     <>
-      <Section className="home__welcome">
+      <Box className={classes.welcomeBg}>
         <Container className={classes.homeWelcome}>
-          <Typography component="div" style={{ height: "10vh" }} />
           <Typography className={classes.header} variant="h1">
             Digital Art
           </Typography>
@@ -118,7 +123,7 @@ function Home(props) {
             </Button>
           </form>
         </Container>
-      </Section>
+      </Box>
 
       <Container disableGutters>
         <Masonry className={classes.masonry}>
