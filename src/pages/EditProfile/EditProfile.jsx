@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Section } from "../../components";
 import { useHistory } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthContext";
 import firebase from "firebase/app";
@@ -171,88 +170,86 @@ function EditProfile() {
   }
 
   return (
-    <Section>
-      <Container>
-        <Box
-          my={2}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <Typography variant="h2">Edit Profile</Typography>
-          <Box>
-            <Button
-              variant="outlined"
-              color="primary"
-              onClick={() => history.push("/myProfile")}
-            >
-              Back
-            </Button>
-          </Box>
+    <Container>
+      <Box
+        my={2}
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+      >
+        <Typography variant="h2">Edit Profile</Typography>
+        <Box>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => history.push("/myProfile")}
+          >
+            Back
+          </Button>
         </Box>
-        <form>
-          <Grid container spacing={2}>
-            <Grid item xs={12}>
-              <Avatar className={classes.avatar} src={userData.profileImage} />
-              <Input
-                accept="image/*"
-                type="file"
-                style={{ width: "100%" }}
-                onChange={(e) => {
-                  setImage(e.target.files[0]);
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                style={{ width: "100%" }}
-                variant="filled"
-                label="Username"
-                color="primary"
-                type="text"
-                value={userData && userData.name}
-                onChange={(e) => {
-                  setUserData({ ...userData, name: e.target.value });
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextareaAutosize
-                style={{ width: "100%" }}
-                variant="filled"
-                label="Bio"
-                placeholder="Bio"
-                rowsMin={3}
-                color="primary"
-                type="textarea"
-                value={userData && userData.bio}
-                onChange={(e) => {
-                  setUserData({ ...userData, bio: e.target.value });
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              {progress && (
-                <LinearProgress
-                  className={classes.spacing}
-                  variant="determinate"
-                  value={progress}
-                />
-              )}
-              <Button
-                color="primary"
-                variant="contained"
-                fullWidth
-                disabled={formLoading}
-                onClick={(e) => submitChanges(e)}
-              >
-                Save
-              </Button>
-            </Grid>
+      </Box>
+      <form>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Avatar className={classes.avatar} src={userData.profileImage} />
+            <Input
+              accept="image/*"
+              type="file"
+              style={{ width: "100%" }}
+              onChange={(e) => {
+                setImage(e.target.files[0]);
+              }}
+            />
           </Grid>
-        </form>
-      </Container>
-    </Section>
+          <Grid item xs={12}>
+            <TextField
+              style={{ width: "100%" }}
+              variant="filled"
+              label="Username"
+              color="primary"
+              type="text"
+              value={userData && userData.name}
+              onChange={(e) => {
+                setUserData({ ...userData, name: e.target.value });
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextareaAutosize
+              style={{ width: "100%" }}
+              variant="filled"
+              label="Bio"
+              placeholder="Bio"
+              rowsMin={3}
+              color="primary"
+              type="textarea"
+              value={userData && userData.bio}
+              onChange={(e) => {
+                setUserData({ ...userData, bio: e.target.value });
+              }}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            {progress && (
+              <LinearProgress
+                className={classes.spacing}
+                variant="determinate"
+                value={progress}
+              />
+            )}
+            <Button
+              color="primary"
+              variant="contained"
+              fullWidth
+              disabled={formLoading}
+              onClick={(e) => submitChanges(e)}
+            >
+              Save
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
+    </Container>
   );
 }
 

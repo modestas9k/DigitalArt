@@ -18,6 +18,10 @@ import {
 } from "@material-ui/core";
 
 const useStyles = makeStyles(() => ({
+  toolbar: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
   modal: {
     display: "flex",
     alignItems: "center",
@@ -53,7 +57,7 @@ function Header() {
 
   return (
     <AppBar position="sticky">
-      <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+      <Toolbar className={classes.toolbar}>
         <Typography variant="h6" onClick={() => history.push("/")}>
           Digital_Art
         </Typography>
