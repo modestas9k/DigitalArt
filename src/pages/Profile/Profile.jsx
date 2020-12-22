@@ -1,30 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { ProfileBox, Loading } from "../../components";
 import firebase from "firebase/app";
 import "firebase/firestore";
-import {
-  Button,
-  Avatar,
-  Typography,
-  Container,
-  makeStyles,
-  Box,
-} from "@material-ui/core";
+import { Container, makeStyles } from "@material-ui/core";
 import { Post } from "../../components";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
-  profileWrapper: {
-    display: "flex",
-    justifyContent: "center",
-    marginTop: theme.spacing(6),
-    marginBottom: theme.spacing(8),
-  },
-  avatarWrapper: {
-    width: theme.spacing(17),
-    height: theme.spacing(17),
-    marginRight: 20,
-  },
   postBox: {
     boxSizing: "border-box",
     marginBottom: theme.spacing(1),
@@ -42,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Profile() {
-  const history = useHistory();
   const [profileData, setProfileData] = useState();
   const [userPosts, setUserPosts] = useState();
   const classes = useStyles();
@@ -85,18 +67,8 @@ export default function Profile() {
     <>
       {profileData && (
         <>
-          <Container className={classes.profileWrapper}>
-            <Box>
-              <Avatar
-                className={classes.avatarWrapper}
-                src={profileData.profileImage}
-              />
-            </Box>
-            <Box>
-              <Typography variant="h4">{profileData.name}</Typography>
-              <Typography variant="subtitle2">{profileData.bio} </Typography>
-            </Box>
-          </Container>
+          <ProfileBox userData={profileData} />
+
           <Container>
             <Masonry>
               {userPosts &&
@@ -120,10 +92,7 @@ export default function Profile() {
       )}
       {!profileData && (
         <Container>
-          <Typography variant="h2">Sorry, no user found</Typography>
-          <Button onClick={() => history.push("/")} className={classes.button}>
-            Home
-          </Button>
+          <Loading />
         </Container>
       )}
     </>

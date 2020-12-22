@@ -1,54 +1,20 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Post } from "../../components";
-import { useHistory } from "react-router-dom";
+import { Post, ProfileBox } from "../../components";
 import { AuthContext } from "../../contexts/AuthContext";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
 import {
   Container,
-  Avatar,
-  Grid,
   Typography,
   makeStyles,
-  IconButton,
   Paper,
-  Box,
   Modal,
   Button,
 } from "@material-ui/core";
-import SettingsIcon from "@material-ui/icons/Settings";
 import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
-  profileWrapper: {
-    display: "flex",
-    marginTop: theme.spacing(6),
-    marginBottom: theme.spacing(6),
-    maxWidth: "700px",
-    margin: "0 auto",
-  },
-
-  avatar: {
-    width: theme.spacing(17),
-    height: theme.spacing(17),
-    marginRight: 20,
-    marginBottom: 20,
-    marginInline: "auto",
-  },
-  profileTextBox: {
-    marginBottom: theme.spacing(4),
-    textAlign: "center",
-    [theme.breakpoints.up("sm")]: {
-      textAlign: "left",
-    },
-  },
-  image: {
-    width: "100%",
-    objectFit: "contain",
-    borderRadius: 3,
-  },
-
   modal: {
     display: "flex",
     alignItems: "center",
@@ -59,13 +25,7 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(4),
   },
-  buttonBox: {
-    display: "flex",
-    justifyContent: "space-between",
-    [theme.breakpoints.up("sm")]: {
-      justifyContent: "flex-end",
-    },
-  },
+
   postBox: {
     boxSizing: "border-box",
     marginBottom: theme.spacing(1),
@@ -85,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
 function MyProfile() {
   const classes = useStyles();
   const auth = useContext(AuthContext);
-  const history = useHistory();
   const [deleteModal, setDeleteModal] = useState(false);
   const [deletedPostId, setDeletedPostId] = useState();
   const [userPosts, setUserPosts] = useState();
@@ -193,48 +152,7 @@ function MyProfile() {
             </div>
           </Paper>
         </Modal>
-        <Grid container className={classes.profileWrapper}>
-          <Grid item xs={12} sm={4}>
-            <Avatar className={classes.avatar} src={userData.profileImage} />
-          </Grid>
-          <Grid item xs={12} sm={8}>
-            {userData.name !== "" && (
-              <Box className={classes.profileTextBox} mx="auto">
-                <Typography variant="h4">{userData.name}</Typography>
-                <Typography variant="subtitle2">{userData.bio} </Typography>
-              </Box>
-            )}
-            {userData.name === "" && userData.bio === "" && (
-              <Box className={classes.profileTextBox}>
-                <Typography variant="body1">
-                  You don't have any information about your self.
-                </Typography>
-                <Button
-                  style={{ margin: "16px" }}
-                  variant="contained"
-                  color="primary"
-                  onClick={() => history.push("/editProfile")}
-                >
-                  Get started
-                </Button>
-              </Box>
-            )}
-          </Grid>
-          {userData.name !== "" && (
-            <Grid item xs={12} className={classes.buttonBox}>
-              <Button
-                color="primary"
-                variant="outlined"
-                onClick={() => history.push("/upload")}
-              >
-                Upload Image
-              </Button>
-              <IconButton onClick={() => history.push("/editProfile")}>
-                <SettingsIcon />
-              </IconButton>
-            </Grid>
-          )}
-        </Grid>
+        <ProfileBox userData={userData} myProfile={true} />
       </Container>
       <Container disableGutters>
         <Masonry>
