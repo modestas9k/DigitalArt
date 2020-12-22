@@ -8,6 +8,7 @@ import {
   Button,
   TextField,
   Box,
+  CircularProgress,
 } from "@material-ui/core";
 
 export default function Login() {
@@ -20,18 +21,21 @@ export default function Login() {
     email: "",
     password: "",
   });
-
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState();
 
   function login(data) {
     setEmailError("");
     setPasswordError("");
+    setLoading(true);
 
     if (!data.email) {
+      setLoading(false);
       return setEmailError("Enter email");
     }
     if (!data.password) {
+      setLoading(false);
       return setPasswordError("Enter password");
     }
     if (data.email && data.password) {
@@ -39,9 +43,11 @@ export default function Login() {
         .auth()
         .signInWithEmailAndPassword(data.email, data.password)
         .then((user) => {
+          setLoading(false);
           console.log(user.uid);
         })
         .catch((error) => {
+          setLoading(false);
           if (error.code === "auth/invalid-email") {
             setEmailError(error.message);
           } else {
@@ -53,11 +59,14 @@ export default function Login() {
   function registerUser(data) {
     setEmailError("");
     setPasswordError("");
+    setLoading(true);
 
     if (!data.email) {
+      setLoading(false);
       return setEmailError("Enter email");
     }
     if (!data.password) {
+      setLoading(false);
       return setPasswordError("Enter password");
     }
     if (data.email && data.password) {
@@ -65,9 +74,11 @@ export default function Login() {
         .auth()
         .createUserWithEmailAndPassword(data.email, data.password)
         .then((user) => {
+          setLoading(false);
           console.log(user.uid);
         })
         .catch((error) => {
+          setLoading(false);
           if (error.code === "auth/invalid-email") {
             setEmailError(error.message);
           } else {
@@ -128,7 +139,8 @@ export default function Login() {
                   login(loginData);
                 }}
               >
-                Enter
+                {loading && <CircularProgress color="inherit" />}
+                {!loading && <span>Enter</span>}
               </Button>
             </form>
             <Box pt={2}>
@@ -196,7 +208,8 @@ export default function Login() {
                   registerUser(registerData);
                 }}
               >
-                Enter
+                {loading && <CircularProgress color="inherit" />}
+                {!loading && <span>Enter</span>}
               </Button>
             </form>
             <Box pt={2}>
