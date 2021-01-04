@@ -8,8 +8,8 @@ import {
   Typography,
   Container,
   makeStyles,
-  Button,
   Box,
+  Chip,
 } from "@material-ui/core";
 import Masonry from "react-masonry-component";
 
@@ -32,6 +32,9 @@ const useStyles = makeStyles((theme) => ({
   TextField: {
     background: "rgba(255, 255, 255, 0.562)",
     borderRadius: "4px",
+  },
+  chip: {
+    marginTop: theme.spacing(4),
   },
   postBox: {
     boxSizing: "border-box",
@@ -58,6 +61,9 @@ function Home(props) {
   useEffect(() => {
     defaultPosts();
   }, []);
+  useEffect(() => {
+    goSearch();
+  }, [searchValue]);
 
   function defaultPosts() {
     return firebase
@@ -73,7 +79,7 @@ function Home(props) {
         );
       });
   }
-  function goSearch(e) {
+  function goSearch() {
     if (searchValue !== "") {
       firebase
         .firestore()
@@ -91,6 +97,9 @@ function Home(props) {
     }
   }
 
+  const handleChipClicks = (cap) => {
+    setSearchValue(cap);
+  };
   return (
     <>
       <Box className={classes.welcomeBg}>
@@ -102,26 +111,27 @@ function Home(props) {
             Place where artists can share and sell there work. Powered by
             creators.
           </Typography>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log(e);
-              goSearch(e);
-            }}
-          >
-            <TextField
-              className={classes.TextField}
-              label="Search..."
-              color="primary"
-              margin="normal"
-              variant="filled"
-              fullWidth={true}
-              onChange={(e) => setSearchValue(e.target.value)}
-            />
-            <Button type="submit" color="primary" variant="contained">
-              Search
-            </Button>
-          </form>
+
+          {searchValue && (
+            <div>
+              <Chip
+                className={classes.chip}
+                label={searchValue}
+                variant="default"
+                color="default"
+                onDelete={() => setSearchValue("")}
+              />
+            </div>
+          )}
+          <TextField
+            className={classes.TextField}
+            label="Search..."
+            color="primary"
+            margin="normal"
+            variant="filled"
+            fullWidth={true}
+            onChange={(e) => setSearchValue(e.target.value)}
+          />
         </Container>
       </Box>
 
@@ -138,6 +148,7 @@ function Home(props) {
                     username={post.username}
                     caption={post.caption}
                     imageURL={post.smallImageURL}
+                    handleChipClick={(cap) => handleChipClicks(cap)}
                   />
                 </div>
               );
@@ -154,6 +165,7 @@ function Home(props) {
                     username={post.username}
                     caption={post.caption}
                     imageURL={post.smallImageURL}
+                    handleChipClick={(cap) => handleChipClicks(cap)}
                   />
                 </div>
               );

@@ -30,6 +30,7 @@ function Post({
   userId,
   handleDeleteButton,
   className,
+  handleChipClick,
 }) {
   const history = useHistory();
   const classes = useStyles();
@@ -44,31 +45,34 @@ function Post({
           {/* Here ar 3 types of Post bottom that I use  */}
           {/* for home page */}
           {userId !== "myProfile" && userId !== "profile" && (
-            <Chip
-              className={classes.chip}
-              avatar={<Avatar src={userImage}></Avatar>}
-              label={username}
-              variant="default"
-              color="primary"
-              clickable
-              size="small"
-              onClick={() => history.push(`/profile/${userId}`)}
-            />
+            <>
+              <Chip
+                className={classes.chip}
+                avatar={<Avatar src={userImage}></Avatar>}
+                label={username}
+                variant="default"
+                color="primary"
+                clickable
+                size="small"
+                onClick={() => history.push(`/profile/${userId}`)}
+              />
+              {caption &&
+                caption.map((cap) => {
+                  return (
+                    <Chip
+                      className={classes.chip}
+                      size="small"
+                      label={cap}
+                      key={cap}
+                      clickable
+                      onClick={() => handleChipClick(cap)}
+                    />
+                  );
+                })}
+            </>
           )}
           {/* for other ppl profile */}
           {userId === "profile" && (
-            <Chip
-              className={classes.chip}
-              avatar={<Avatar src={userImage}></Avatar>}
-              label={username}
-              variant="default"
-              color="primary"
-              clickable
-              size="small"
-            />
-          )}
-          {/* for my Profile page */}
-          {userId === "myProfile" && (
             <>
               <Chip
                 className={classes.chip}
@@ -79,6 +83,22 @@ function Post({
                 clickable
                 size="small"
               />
+              {caption &&
+                caption.map((cap) => {
+                  return (
+                    <Chip
+                      className={classes.chip}
+                      size="small"
+                      label={cap}
+                      key={cap}
+                    />
+                  );
+                })}
+            </>
+          )}
+          {/* for my Profile page */}
+          {userId === "myProfile" && (
+            <>
               <IconButton
                 variant="text"
                 color="default"
@@ -86,19 +106,19 @@ function Post({
               >
                 <DeleteIcon />
               </IconButton>
+              {caption &&
+                caption.map((cap) => {
+                  return (
+                    <Chip
+                      className={classes.chip}
+                      size="small"
+                      label={cap}
+                      key={cap}
+                    />
+                  );
+                })}
             </>
           )}
-          {caption &&
-            caption.map((cap) => {
-              return (
-                <Chip
-                  className={classes.chip}
-                  size="small"
-                  label={cap}
-                  key={cap}
-                />
-              );
-            })}
         </Box>
       </Container>
     </>
