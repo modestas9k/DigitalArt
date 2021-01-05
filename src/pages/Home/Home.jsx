@@ -12,6 +12,7 @@ import {
   Chip,
 } from "@material-ui/core";
 import Masonry from "react-masonry-component";
+import { useHistory, useLocation } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   welcomeBg: {
@@ -52,15 +53,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+function useSearch() {
+  return new URLSearchParams(useLocation().search);
+}
 function Home(props) {
+  const history = useHistory();
   const [posts, setPosts] = useState([]);
   const [searchValue, setSearchValue] = useState("");
   const [searchPosts, setSearchPosts] = useState();
   const classes = useStyles(props);
-
+  let params = useSearch();
+  if (searchValue === "" && params.get("query")) {
+    setSearchValue(params.get("query"));
+    history.push("/");
+  }
   useEffect(() => {
     defaultPosts();
   }, []);
+
   useEffect(() => {
     if (searchValue !== "") {
       firebase
@@ -104,13 +114,16 @@ function Home(props) {
         .ref(imageRef)
         .getDownloadURL()
         .then((url) => {
-          console.log(url);
-          // This can be downloaded directly:
-          var xhr = new XMLHttpRequest();
+          let xhr = new XMLHttpRequest();
           xhr.responseType = "blob";
-          // xhr.onload = function (event) {
-          //   var blob = xhr.response;
-          // };
+          xhr.onload = function () {
+            let ref = firebase.storage().ref(imageRef);
+            let blob = xhr.response;
+            let el = document.createElement("a");
+            el.href = URL.createObjectURL(blob);
+            el.download = ref.name;
+            el.click();
+          };
           xhr.open("GET", url);
           xhr.send();
         })
