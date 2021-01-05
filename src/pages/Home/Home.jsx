@@ -108,9 +108,9 @@ function Home(props) {
           // This can be downloaded directly:
           var xhr = new XMLHttpRequest();
           xhr.responseType = "blob";
-          xhr.onload = function (event) {
-            var blob = xhr.response;
-          };
+          // xhr.onload = function (event) {
+          //   var blob = xhr.response;
+          // };
           xhr.open("GET", url);
           xhr.send();
         })

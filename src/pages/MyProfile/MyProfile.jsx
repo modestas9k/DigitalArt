@@ -20,6 +20,11 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
+  buttons: {
+    display: "flex",
+    justifyContent: "space-around",
+    marginTop: theme.spacing(2),
+  },
   paper: {
     backgroundColor: theme.palette.background.paper,
     boxShadow: theme.shadows[5],
@@ -130,7 +135,10 @@ function MyProfile() {
         >
           <Paper className={classes.paper}>
             <Typography variant="h5">Delete this Post? </Typography>
-            <div className={classes.root}>
+            <Typography variant="caption">
+              Image will be deleted from storage
+            </Typography>
+            <div className={classes.buttons}>
               <Button
                 onClick={() => {
                   deletePost(deletedPostId);
