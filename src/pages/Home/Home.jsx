@@ -62,7 +62,21 @@ function Home(props) {
     defaultPosts();
   }, []);
   useEffect(() => {
-    goSearch();
+    if (searchValue !== "") {
+      firebase
+        .firestore()
+        .collection("posts")
+        .where("caption", "array-contains", searchValue)
+        .get()
+        .then((snapshot) => {
+          setSearchPosts(
+            snapshot.docs.map((doc) => ({
+              id: doc.id,
+              post: doc.data(),
+            }))
+          );
+        });
+    }
   }, [searchValue]);
 
   function defaultPosts() {
@@ -79,27 +93,51 @@ function Home(props) {
         );
       });
   }
-  function goSearch() {
-    if (searchValue !== "") {
-      firebase
-        .firestore()
-        .collection("posts")
-        .where("caption", "array-contains", searchValue)
-        .get()
-        .then((snapshot) => {
-          setSearchPosts(
-            snapshot.docs.map((doc) => ({
-              id: doc.id,
-              post: doc.data(),
-            }))
-          );
-        });
-    }
-  }
 
   const handleChipClicks = (cap) => {
     setSearchValue(cap);
   };
+  const handleDownloadChip = (imageRef) => {
+    if (imageRef) {
+      firebase
+        .storage()
+        .ref(imageRef)
+        .getDownloadURL()
+        .then((url) => {
+          console.log(url);
+          // This can be downloaded directly:
+          var xhr = new XMLHttpRequest();
+          xhr.responseType = "blob";
+          xhr.onload = function (event) {
+            var blob = xhr.response;
+          };
+          xhr.open("GET", url);
+          xhr.send();
+        })
+        .catch(function (error) {
+          switch (error.code) {
+            case "storage/object-not-found":
+              console.log("Not found");
+              break;
+
+            case "storage/unauthorized":
+              console.log("User doesn't have permission to access the object");
+              break;
+
+            case "storage/canceled":
+              console.log("User canceled the upload");
+              break;
+
+            default:
+              console.log(
+                "Unknown error occurred, inspect the server response"
+              );
+              break;
+          }
+        });
+    }
+  };
+
   return (
     <>
       <Box className={classes.welcomeBg}>
@@ -166,6 +204,8 @@ function Home(props) {
                     caption={post.caption}
                     imageURL={post.smallImageURL}
                     handleChipClick={(cap) => handleChipClicks(cap)}
+                    freeDownload={post.freeDownload}
+                    handleDownloadChip={() => handleDownloadChip(post.imageRef)}
                   />
                 </div>
               );
