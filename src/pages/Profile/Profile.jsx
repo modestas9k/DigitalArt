@@ -4,7 +4,7 @@ import firebase from "firebase/app";
 import "firebase/firestore";
 import { Container, makeStyles } from "@material-ui/core";
 import { Post } from "../../components";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import Masonry from "react-masonry-component";
 
 const useStyles = makeStyles((theme) => ({
@@ -29,6 +29,7 @@ export default function Profile() {
   const [userPosts, setUserPosts] = useState();
   const classes = useStyles();
   const { id } = useParams();
+  const history = useHistory();
 
   useEffect(() => {
     let mounted = true;
@@ -82,6 +83,9 @@ export default function Profile() {
                         username={post.username}
                         caption={post.caption}
                         imageURL={post.smallImageURL}
+                        handleChipClick={(cap) => {
+                          history.push("/?query=" + cap);
+                        }}
                       />
                     </div>
                   );

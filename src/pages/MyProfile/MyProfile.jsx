@@ -13,6 +13,7 @@ import {
   Button,
 } from "@material-ui/core";
 import Masonry from "react-masonry-component";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -49,6 +50,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MyProfile() {
   const classes = useStyles();
+  const history = useHistory();
   const auth = useContext(AuthContext);
   const [deleteModal, setDeleteModal] = useState(false);
   const [deletedPostId, setDeletedPostId] = useState();
@@ -175,6 +177,9 @@ function MyProfile() {
                     username={post.username}
                     caption={post.caption}
                     imageURL={post.smallImageURL}
+                    handleChipClick={(cap) => {
+                      history.push("/?query=" + cap);
+                    }}
                     handleDeleteButton={(e) => {
                       setDeleteModal(true);
                       setDeletedPostId({ id: id, ref: post.imageRef });

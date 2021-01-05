@@ -94,6 +94,8 @@ function Post({
                       size="small"
                       label={cap}
                       key={cap}
+                      clickable
+                      onClick={() => handleChipClick(cap)}
                     />
                   );
                 })}
@@ -117,6 +119,8 @@ function Post({
                       size="small"
                       label={cap}
                       key={cap}
+                      clickable
+                      onClick={() => handleChipClick(cap)}
                     />
                   );
                 })}
