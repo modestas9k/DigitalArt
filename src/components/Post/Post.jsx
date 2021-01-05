@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import DeleteIcon from "@material-ui/icons/Delete";
+import GetAppIcon from "@material-ui/icons/GetApp";
 
 const useStyles = makeStyles((theme) => ({
   image: {
@@ -31,6 +32,8 @@ function Post({
   handleDeleteButton,
   className,
   handleChipClick,
+  freeDownload,
+  handleDownloadChip,
 }) {
   const history = useHistory();
   const classes = useStyles();
@@ -118,6 +121,15 @@ function Post({
                   );
                 })}
             </>
+          )}
+          {freeDownload && (
+            <IconButton
+              onClick={handleDownloadChip}
+              size="small"
+              color="primary"
+            >
+              <GetAppIcon />
+            </IconButton>
           )}
         </Box>
       </Container>
