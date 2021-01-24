@@ -199,6 +199,7 @@ function Home(props) {
                     username={post.username}
                     caption={post.caption}
                     imageURL={post.smallImageURL}
+                    freeDownload={post.freeDownload}
                     handleChipClick={(cap) => handleChipClicks(cap)}
                   />
                 </div>
